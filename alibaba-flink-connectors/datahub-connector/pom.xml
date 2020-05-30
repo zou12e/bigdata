@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+		 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>com.alibaba.flink</groupId>
+		<artifactId>aliyun-flink-connectors-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>..</relativePath>
+	</parent>
+
+	<artifactId>datahub-connector</artifactId>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.aliyun.datahub</groupId>
+			<artifactId>aliyun-sdk-datahub</artifactId>
+			<version>2.12.2-public</version>
+			<exclusions>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-api</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>slf4j-log4j12</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jcl-over-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.slf4j</groupId>
+					<artifactId>jul-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>log4j</groupId>
+					<artifactId>log4j</artifactId>
+				</exclusion>
+				<!--<exclusion>-->
+					<!--<artifactId>jackson-databind</artifactId>-->
+					<!--<groupId>com.fasterxml.jackson.core</groupId>-->
+				<!--</exclusion>-->
+				<!--<exclusion>-->
+					<!--<artifactId>jackson-annotations</artifactId>-->
+					<!--<groupId>com.fasterxml.jackson.core</groupId>-->
+				<!--</exclusion>-->
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>com.ablibaba.flink</groupId>
+			<artifactId>aliyun-connectors-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-core</artifactId>
+			<version>${flink.version}</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.flink</groupId>
+			<artifactId>flink-streaming-java_2.11</artifactId>
+			<version>${flink.version}</version>
+			<scope>provided</scope>
+		</dependency>
+        <!--necessary for datahub example run-->
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-shaded-netty</artifactId>
+            <version>4.0.27.Final-2.0</version>
+            <scope>provided</scope>
+        </dependency>
+	</dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <id>shade-flink</id>
+                        <configuration>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>jar-with-dependencies</shadedClassifierName>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
+                            <artifactSet combine.self="override">
+                                <excludes>
+                                    <!-- log4j -->
+                                    <exclude>org.slf4j:slf4j-log4j12</exclude>
+                                    <exclude>log4j:log4j</exclude>
+                                    <!-- jars imported by parent -->
+                                    <exclude>org.slf4j:slf4j-api</exclude>
+                                    <exclude>com.google.code.findbugs:jsr305</exclude>
+                                    <!-- flink shaded jars -->
+                                    <exclude>org.apache.flink:flink-shaded-*</exclude>
+                                    <exclude>com.alibaba.blink:flink-shaded-*</exclude>
+                                    <exclude>com.google.guava:guava</exclude>
+                                    <!--<exclude>com.fasterxml.jackson.*:*</exclude>-->
+                                    <exclude>tv.cntt:*</exclude>
+                                    <exclude>io.netty:*</exclude>
+                                    <exclude>org.ow2.asm:*</exclude>
+                                    <!-- other third-party jars we must use -->
+                                    <exclude>commons-logging:commons-logging</exclude>
+                                    <exclude>commons-codec:commons-codec</exclude>
+                                    <exclude>commons-collections:commons-collections</exclude>
+                                    <exclude>org.apache.commons:commons-lang3</exclude>
+                                    <!-- flink dependencies are provided -->
+                                    <exclude>org.apache.flink:*</exclude>
+                                    <exclude>com.alibaba.blink:force-shading</exclude>
+                                </excludes>
+                            </artifactSet>
+
+                            <relocations combine.self="override">
+                                <relocation>
+                                    <pattern>org.apache.http</pattern>
+                                    <shadedPattern>com.alibaba.blink.shaded.datahub.org.apache.http</shadedPattern>
+                                </relocation>
+                                <!--<relocation>-->
+                                <!--<pattern>org.glassfish.jersey</pattern>-->
+                                <!--<shadedPattern>com.alibaba.blink.shaded.datahub.org.glassfish.jersey</shadedPattern>-->
+                                <!--</relocation>-->
+                                <relocation>
+                                    <pattern>com.fasterxml.jackson</pattern>
+                                    <shadedPattern>com.alibaba.blink.shaded.datahub.com.fasterxml.jackson</shadedPattern>
+                                </relocation>
+                                <relocation>
+                                    <pattern>javax.ws.rs</pattern>
+                                    <shadedPattern>com.alibaba.blink.shaded.datahub.javax.ws.rs</shadedPattern>
+                                </relocation>
+                            </relocations>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
