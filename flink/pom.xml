@@ -21,7 +21,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.flink.LogsData</mainClass>
+                            <mainClass>com.flink.FilesData</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -69,16 +69,17 @@
     </build>
 
     <properties>
-        <scala.version>2.11.12</scala.version>
-        <scala.binary.version>2.11</scala.binary.version>
-        <blink.version>blink-3.4.0</blink.version>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
+        <flink.version>1.10.1</flink.version>
+        <hadoop.version>3.2.1</hadoop.version>
     </properties>
 
     <dependencies>
 
-
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.47</version>
+        </dependency>
 
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -102,41 +103,75 @@
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-java</artifactId>
-            <version>1.10.1</version>
-<!--                        <scope>provided</scope>-->
+            <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-streaming-java_2.12</artifactId>
-            <version>1.10.1</version>
-<!--                        <scope>provided</scope>-->
+            <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
 
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-rabbitmq_2.12</artifactId>
-            <version>1.10.1</version>
-<!--                        <scope>provided</scope>-->
+            <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
+
 
         <dependency>
             <groupId>org.apache.flink</groupId>
             <artifactId>flink-connector-kafka_2.12</artifactId>
-            <version>1.10.1</version>
+            <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
 
         <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>fastjson</artifactId>
-            <version>1.2.47</version>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-connector-filesystem_2.12</artifactId>
+            <version>${flink.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.flink</groupId>
+            <artifactId>flink-hadoop-compatibility_2.12</artifactId>
+            <version>${flink.version}</version>
+            <scope>provided</scope>
         </dependency>
 
 
 
 
+
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-common</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-hdfs</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.hadoop</groupId>
+            <artifactId>hadoop-client</artifactId>
+            <version>${hadoop.version}</version>
+            <scope>provided</scope>
+        </dependency>
 
         <!--        <dependency>-->
         <!--            <groupId>org.apache.flink</groupId>-->

@@ -1,5 +1,6 @@
 package com.flink;
 
+import com.alibaba.fastjson.JSONObject;
 import com.flink.model.User;
 import com.flink.out.SinkData;
 import org.apache.flink.api.common.functions.FlatMapFunction;
@@ -40,9 +41,8 @@ public class RabbitMqData {
                 .flatMap(new FlatMapFunction<String, User>() {
                     @Override
                     public void flatMap(String value, Collector<User> out) throws Exception {
-                        System.out.println(value);
-//                        User user = JSONObject.parseObject(value, User.class);
-//                        out.collect(user);
+                        User user = JSONObject.parseObject(value, User.class);
+                        out.collect(user);
                     }
                 })
                 .keyBy("name")
